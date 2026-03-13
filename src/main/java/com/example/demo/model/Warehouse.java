@@ -28,6 +28,11 @@ public class Warehouse {
     @JoinColumn(name = "location_id")
     private Location location;
 
+    // One-to-One: each warehouse has at most one manager user
+    @OneToOne
+    @JoinColumn(name = "manager_id", unique = true)
+    private User manager;
+
     // One Warehouse records many StockTransactions
     @OneToMany(mappedBy = "warehouse")
     private List<StockTransaction> stockTransactions;
@@ -78,6 +83,14 @@ public class Warehouse {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public User getManager() {
+        return manager;
+    }
+
+    public void setManager(User manager) {
+        this.manager = manager;
     }
 
     public List<StockTransaction> getStockTransactions() {

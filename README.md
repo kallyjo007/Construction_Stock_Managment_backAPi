@@ -279,26 +279,39 @@ Together, pagination and sorting provide a flexible and performant way to browse
 
 ---
 
-## 8. One-to-One relationship (to be added)
+## 8. One-to-One relationship (Warehouse ↔ User as manager)
 
-The current model contains many `@ManyToOne` and `@OneToMany` relationships and one many‑to‑many via `PurchaseOrderItem`. To fully satisfy the rubric for a **One‑to‑One** relationship, you can introduce a pair such as:
+The project demonstrates a **one-to-one** relationship using existing entities: each warehouse can have exactly one manager user, and each user can manage at most one warehouse.
 
-- `User` ↔ `UserProfile`
-- `ProjectSite` ↔ `SiteDetail`
+### 8.1 Mapping on `Warehouse` (owning side)
 
-Pattern:
+- In `Warehouse`:
+  - `@OneToOne`
+  - `@JoinColumn(name = "manager_id", unique = true)`
+  - `private User manager;`
 
-- In one entity:
-  - `@OneToOne @JoinColumn(name = "user_id") private User user;`
-- Or mappedBy style:
-  - `@OneToOne(mappedBy = "user") private UserProfile profile;`
+**What this means**:
 
-**Explanation**:
+- The `warehouses` table gets a column `manager_id` which is a foreign key to `users.user_id`.
+- The `unique = true` constraint on `manager_id` ensures that **the same user cannot be assigned as manager to more than one warehouse**, which enforces the 1–1 rule at the database level.
 
-- One‑to‑one means each row in table A corresponds to at most one row in table B.
-- The foreign key is placed in one of the tables and constrained to be unique, ensuring 1–1 cardinality at the database level.
+### 8.2 Back-reference on `User` (inverse side)
 
-This placeholder explains the logic; you can implement a concrete 1–1 pair and reference this explanation in your report.
+- In `User`:
+  - `@OneToOne(mappedBy = "manager")`
+  - `private Warehouse managedWarehouse;`
+
+**What this means**:
+
+- `User` does not own the foreign key; it simply provides a convenient way to navigate from a user to the warehouse they manage.
+- The `mappedBy = "manager"` tells JPA that the actual relationship (and the foreign key) is defined in the `Warehouse.manager` field.
+
+### 8.3 Explanation in words
+
+- There is at most one `Warehouse` row pointing to a given `User` row via `manager_id` because of the unique constraint.
+- As a result, the pair (`Warehouse`, `User`) behaves as a **one-to-one relationship**:
+  - One warehouse ↔ one manager user.
+  - One user ↔ at most one managed warehouse.
 
 ---
 

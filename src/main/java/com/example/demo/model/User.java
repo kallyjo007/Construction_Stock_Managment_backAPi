@@ -30,6 +30,10 @@ public class User {
     @OneToMany(mappedBy = "createdBy")
     private List<PurchaseOrder> purchaseOrders;
 
+    // Optional back-reference: one user can manage at most one warehouse
+    @OneToOne(mappedBy = "manager")
+    private Warehouse managedWarehouse;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -87,5 +91,13 @@ public class User {
 
     public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
         this.purchaseOrders = purchaseOrders;
+    }
+
+    public Warehouse getManagedWarehouse() {
+        return managedWarehouse;
+    }
+
+    public void setManagedWarehouse(Warehouse managedWarehouse) {
+        this.managedWarehouse = managedWarehouse;
     }
 }
