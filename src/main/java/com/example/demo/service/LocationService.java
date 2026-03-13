@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Location;
+import com.example.demo.model.ELocationType;
 import com.example.demo.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,6 +37,9 @@ public class LocationService {
             return "Location saved successfully";
         }
     }
+
+    // Get all locations by parent ID and type (e.g., all SECTORs in a DISTRICT)
+    public List<Location> findByParentIdAndType(UUID parentId, ELocationType type) {
+        return locationRepository.findByParentIdAndType(parentId, type);
+    }
 }
-
-
